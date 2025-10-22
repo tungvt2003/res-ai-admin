@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Layout, Menu, MenuProps, Dropdown, Modal } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { FaChalkboardTeacher, FaHome, FaUser } from "react-icons/fa";
+import { FaChalkboardTeacher, FaFile, FaHome, FaList, FaUser } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
 import { ChevronLeft, ChevronRight, Globe, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
@@ -47,6 +47,18 @@ const Sidebar: React.FC = () => {
       label: "Quản lý Giảng viên",
       icon: <FaChalkboardTeacher className="w-5 h-5" />,
       url: "/lecturers",
+    },
+    {
+      key: "categories",
+      label: "Quản lý Danh mục",
+      icon: <FaList className="w-5 h-5" />,
+      url: "/categories",
+    },
+    {
+      key: "blogs",
+      label: "Quản lý Bài viết",
+      icon: <FaFile className="w-5 h-5" />,
+      url: "/blogs",
     },
   ];
 

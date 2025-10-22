@@ -48,6 +48,22 @@ export const BLOGS: PathItem = {
     LABEL: "Bài viết",
     BREADCRUMB: [{ title: "Bài viết", href: "/blogs" }],
   },
+  CREATE: {
+    PATH: "/blogs/create",
+    LABEL: "Tạo bài viết",
+    BREADCRUMB: [
+      { title: "Bài viết", href: "/blogs" },
+      { title: "Tạo mới", href: "/blogs/create" },
+    ],
+  },
+  EDIT: {
+    PATH: "/blogs/:id",
+    LABEL: "Chỉnh sửa bài viết",
+    BREADCRUMB: [
+      { title: "Bài viết", href: "/blogs" },
+      { title: "Chỉnh sửa", href: "" },
+    ],
+  },
 };
 
 export const USERS: PathItem = {

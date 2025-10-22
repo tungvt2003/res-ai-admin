@@ -12,8 +12,10 @@ import AuthLayout from "../pages/auth/authLayout";
 import Forbidden403 from "../shares/components/Forbidden403";
 import React from "react";
 import LecturerPage from "../pages/lecturer";
-import CategoryPage from "../pages/blog";
-import BlogPage from "../pages/category";
+import CategoryPage from "../pages/category";
+import BlogPage from "../pages/blog";
+import CreateBlogPage from "../pages/blog/create";
+import EditBlogPage from "../pages/blog/edit";
 
 export const Navigator = () => {
   return (
@@ -32,6 +34,8 @@ export const Navigator = () => {
             <Route path={Paths.LECTURERS.DETAIL.PATH} element={<LecturerPage />} />
             <Route path={Paths.CATEGORIES.DETAIL.PATH} element={<CategoryPage />} />
             <Route path={Paths.BLOGS.DETAIL.PATH} element={<BlogPage />} />
+            <Route path={Paths.BLOGS.CREATE.PATH} element={<CreateBlogPage />} />
+            <Route path={Paths.BLOGS.EDIT.PATH} element={<EditBlogPage />} />
           </Route>
         </Route>
         <Route path="/403" element={<Forbidden403 />} />
