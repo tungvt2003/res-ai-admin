@@ -1,0 +1,156 @@
+@import "tailwindcss";
+@tailwind utilities;
+
+
+@theme {
+  --font-plus-jakarta-sans: "Plus Jakarta Sans", sans-serif;
+  --font-sans:
+    "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol",
+    "Noto Color Emoji";
+
+  --color-orange-primary: #f77404;
+  --color-teal-primary: #139f89;
+  --color-gray-primary: #676363;
+  --color-gray-light: #f5f7fa;
+  --color-gray-light-secondary: #d9e0ec;
+  --color-red-primary: #db2f40;
+
+  --text-3.75: 0.9375rem; /* 15px */
+  --text-4.25: 1.0625rem; /* 17px */
+  --text-4.75: 1.1875rem; /* 19px */
+  --text-5.5: 1.375rem; /* 22px */
+
+  --leading-3.75: 0.9375rem; /* 15px */
+  --leading-4.25: 1.0625rem; /* 17px */
+  --leading-4.5: 1.125rem; /* 18px */
+  --leading-4.75: 1.1875rem; /* 19px */
+  --leading-5.5: 1.375rem; /* 22px */
+}
+
+/* @plugin "@tailwindcss/postcss"; */
+
+html,
+body {
+  @apply bg-white dark:bg-gray-950;
+  font-family:
+    "Plus Jakarta Sans", "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+    "Segoe UI Symbol", "Noto Color Emoji";
+
+  color: #141414;
+
+  -moz-osx-font-smoothing: grayscale;
+
+  @media (prefers-color-scheme: dark) {
+    color-scheme: light;
+    background-color: #ffffff;
+  }
+}
+
+@layer components {
+  .button-primary {
+    @apply bg-orange-primary hover:!bg-white hover:!text-orange-primary transition-all duration-300 ease-out delay-0 hover:cursor-pointer !outline !border-none !outline-orange-primary inline-flex items-center justify-center;
+  }
+}
+
+.schedule-table .row-morning .ant-table-cell {
+  height: 200px !important;    
+  vertical-align: middle;
+}
+
+.schedule-table .row-afternoon .ant-table-cell {
+  height: 200px !important;
+}
+
+.schedule-table .row-evening .ant-table-cell {
+  height: 150px !important;
+}
+
+.schedule-table .ant-table-thead > tr > th {
+  color: #1da1f2;               /* màu chữ */
+  text-align: center;         /* căn giữa chữ */
+  font-weight: bold;
+}
+
+.schedule-table .ant-table-tbody > tr > td {
+  border: 0.5px solid #eaeaea;  /* màu viền */
+  text-align: center;         /* căn giữa chữ */
+  padding: 8px;               /* khoảng cách bên trong ô */
+}
+
+.schedule-table .ant-table-tbody > tr > td:first-child {
+ background-color: #ffffce;
+}
+.schedule-table .ant-table-tbody > tr:hover > td {
+  background-color: unset !important;
+}
+
+.schedule-table .ant-table-tbody > tr:hover >  td:first-child  {
+ background-color: #ffffce !important;
+}
+.schedule-table .ant-table-tbody .ant-table-cell .ant-table-cell-row-hover {
+  background-color: unset !important;
+}
+
+.schedule-table .ant-table-tbody .ant-table-cell:first-child .ant-table-cell-row-hover {
+ background-color: #ffffce !important;
+}
+
+/* Print styles - chỉ in bảng lịch */
+@media print {
+  /* Ẩn tất cả các phần không cần thiết */
+  body * {
+    visibility: hidden;
+  }
+  
+  /* Chỉ hiển thị bảng lịch */
+  .schedule-table,
+  .schedule-table * {
+    visibility: visible;
+  }
+  
+  /* Đặt vị trí bảng lịch */
+  .schedule-table {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100% !important;
+  }
+  
+  /* Ẩn các nút bấm trong bảng */
+  .schedule-table button {
+    display: none !important;
+  }
+  
+  /* Tối ưu hóa cho in */
+  .schedule-table .ant-table {
+    font-size: 12px;
+  }
+  
+  .schedule-table .ant-table-thead > tr > th {
+    background-color: #f0f0f0 !important;
+    color: #000 !important;
+    font-weight: bold;
+    padding: 8px 4px;
+  }
+  
+  .schedule-table .ant-table-tbody > tr > td {
+    padding: 4px;
+    border: 1px solid #000 !important;
+  }
+  
+  /* Đảm bảo màu sắc hiển thị đúng khi in */
+  .schedule-table .ant-table-tbody > tr > td:first-child {
+    background-color: #ffffce !important;
+  }
+  
+  /* Ẩn footer ghi chú khi in */
+  .schedule-table .ant-table-footer {
+    display: none !important;
+  }
+  
+  /* Tối ưu kích thước cho in A4 nằm ngang */
+  @page {
+    margin: 1cm;
+    size: A4 landscape;
+  }
+}
