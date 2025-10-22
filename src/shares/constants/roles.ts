@@ -1,7 +1,6 @@
-export type Role = "admin" | "doctor" | "hospital";
+export type Role = "admin" | "user";
 
 export const ROLES = {
   ADMIN: "admin" as Role,
-  DOCTOR: "doctor" as Role,
-  HOSPITAL: "hospital" as Role,
+  USER: "user" as Role,
 };

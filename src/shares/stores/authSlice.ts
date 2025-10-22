@@ -1,20 +1,28 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { Doctor } from "../../modules/doctors/types/doctor";
+
+export type User = {
+  id: string;
+  username: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  roles: string;
+  isActive: boolean;
+  createdAt: string;
+};
 
 type AuthState = {
   accessToken: string | null;
-  refreshToken: string | null;
   userId: string | null;
   role: string | null;
-  doctor: Doctor | null;
+  user: User | null;
 };
 
 const initialState: AuthState = {
   accessToken: null,
-  refreshToken: null,
   userId: null,
   role: null,
-  doctor: null,
+  user: null,
 };
 
 const authSlice = createSlice({
@@ -25,28 +33,29 @@ const authSlice = createSlice({
       state,
       action: PayloadAction<{
         accessToken: string;
-        refreshToken: string;
         userId: string;
         role: string;
+        user?: User;
       }>,
     ) => {
       state.accessToken = action.payload.accessToken;
-      state.refreshToken = action.payload.refreshToken;
       state.userId = action.payload.userId;
       state.role = action.payload.role;
+      if (action.payload.user) {
+        state.user = action.payload.user;
+      }
     },
-    setDoctor: (state, action: PayloadAction<Doctor>) => {
-      state.doctor = action.payload;
+    setUser: (state, action: PayloadAction<User>) => {
+      state.user = action.payload;
     },
     clearTokens: (state) => {
       state.accessToken = null;
-      state.refreshToken = null;
       state.userId = null;
       state.role = null;
-      state.doctor = null;
+      state.user = null;
     },
   },
 });
 
-export const { setTokens, clearTokens, setDoctor } = authSlice.actions;
+export const { setTokens, clearTokens, setUser } = authSlice.actions;
 export default authSlice.reducer;

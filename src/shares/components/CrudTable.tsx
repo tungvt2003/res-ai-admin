@@ -2,7 +2,6 @@ import { Table, Button, Space, Typography, Popconfirm } from "antd";
 import { PlusCircleFilled, EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import React, { useState } from "react";
 import { useTranslation } from "react-i18next";
-import Filter from "./Filter";
 import AdvancedFilter, { FilterField } from "./AdvancedFilter";
 import { formatDateTime } from "../utils/helper";
 
@@ -51,10 +50,10 @@ export default function CrudTable<T>({
         render: (text: any, record: any) => (
           <div>
             <p className="text-sm">
-              <strong>{t("table.createdAt")}:</strong> {formatDateTime(record.created_at)}
+              <strong>{t("table.createdAt")}:</strong> {formatDateTime(record.createdAt)}
             </p>
             <p className="text-sm">
-              <strong>{t("table.updatedAt")}:</strong> {formatDateTime(record.updated_at)}
+              <strong>{t("table.updatedAt")}:</strong> {formatDateTime(record.updatedAt)}
             </p>
           </div>
         ),
@@ -109,10 +108,8 @@ export default function CrudTable<T>({
       </div>
 
       {/* Hiển thị AdvancedFilter hoặc Filter thông thường */}
-      {useAdvancedFilter && filterFields.length > 0 && onFilter ? (
+      {useAdvancedFilter && filterFields.length > 0 && onFilter && (
         <AdvancedFilter fields={filterFields} onFilter={onFilter} onReset={onResetFilter} />
-      ) : (
-        <Filter placeholder={t("table.searchPlaceholder")} onFilter={setFilterValue} />
       )}
 
       <Table

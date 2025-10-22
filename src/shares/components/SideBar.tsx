@@ -1,26 +1,12 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { Layout, Menu, MenuProps, Dropdown, Modal } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-  FaCalendarAlt,
-  FaCalendarCheck,
-  FaFilePrescription,
-  FaHome,
-  FaHospital,
-  FaHospitalUser,
-  FaPills,
-  FaUser,
-  FaStethoscope,
-  FaRobot,
-  FaCamera,
-} from "react-icons/fa";
-import { FaUserDoctor } from "react-icons/fa6";
+import { FaChalkboardTeacher, FaHome, FaUser } from "react-icons/fa";
 import { IoIosSettings } from "react-icons/io";
-import { ChevronLeft, ChevronRight, Globe, LogOut, VideotapeIcon } from "lucide-react";
+import { ChevronLeft, ChevronRight, Globe, LogOut } from "lucide-react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
 
-import { persistor, RootState, useAppDispatch } from "../stores";
+import { persistor, useAppDispatch } from "../stores";
 import { clearTokens } from "../stores/authSlice";
 
 const { Sider } = Layout;
@@ -43,7 +29,6 @@ const Sidebar: React.FC = () => {
   const dispatch = useAppDispatch();
   const currentPath = location.pathname;
 
-  const { role } = useSelector((state: RootState) => state.auth);
   const fullMenuItems: CustomMenuItem[] = [
     {
       key: "dashboard",
@@ -58,126 +43,12 @@ const Sidebar: React.FC = () => {
       url: "/users",
     },
     {
-      key: "hospitals",
-      label: t("sidebar.hospitals"),
-      icon: <FaHospital className="w-5 h-5" />,
-      url: "/hospitals",
-    },
-    {
-      key: "doctors",
-      label: t("sidebar.doctors"),
-      icon: <FaUserDoctor className="w-5 h-5" />,
-      url: "/doctors",
-    },
-    {
-      key: "patients",
-      label: t("sidebar.patients"),
-      icon: <FaHospitalUser className="w-5 h-5" />,
-      url: "/patients",
-    },
-    {
-      key: "drugs",
-      label: t("sidebar.drugs"),
-      icon: <FaPills className="w-5 h-5" />,
-      url: "/drugs",
-    },
-    {
-      key: "orders",
-      label: t("sidebar.orders"),
-      icon: <FaFilePrescription className="w-5 h-5" />,
-      url: "/orders",
-    },
-    {
-      key: "timeslots",
-      label: t("sidebar.timeslots"),
-      icon: <FaCalendarAlt className="w-5 h-5" />,
-      url: "/timeslots",
-    },
-    {
-      key: "appointments",
-      label: t("sidebar.appointments"),
-      icon: <FaCalendarCheck className="w-5 h-5" />,
-      url: "/appointments",
-    },
-    {
-      key: "video-chat",
-      label: t("sidebar.videoChat"),
-      icon: <VideotapeIcon className="w-5 h-5" />,
-      url: "/video-chat",
-    },
-    {
-      key: "schedule",
-      label: t("sidebar.schedule"),
-      icon: <FaCalendarCheck className="w-5 h-5" />,
-      url: "/schedule",
-    },
-    {
-      key: "generate-time-slot",
-      label: t("sidebar.generateTimeSlot"),
-      icon: <FaCalendarAlt className="w-5 h-5" />,
-      url: "/generate-time-slot",
-    },
-    {
-      key: "services",
-      label: t("sidebar.services"),
-      icon: <FaPills className="w-5 h-5" />,
-      url: "/services",
-    },
-    {
-      key: "doctor-consultation",
-      label: t("sidebar.doctorConsultation"),
-      icon: <FaStethoscope className="w-5 h-5" />,
-      url: "/doctor-consultation",
-    },
-    {
-      key: "ai-diagnosis",
-      label: t("sidebar.aiDiagnosis"),
-      icon: <FaRobot className="w-5 h-5" />,
-      url: "/ai-diagnosis",
-    },
-    {
-      key: "eye-diagnosis",
-      label: t("sidebar.eyeDiagnosis"),
-      icon: <FaCamera className="w-5 h-5" />,
-      url: "/eye-diagnosis",
+      key: "lecturers",
+      label: "Quản lý Giảng viên",
+      icon: <FaChalkboardTeacher className="w-5 h-5" />,
+      url: "/lecturers",
     },
   ];
-
-  const menuItems = useMemo(() => {
-    if (role === "admin")
-      return fullMenuItems.filter(
-        (item) =>
-          ![
-            "generate-time-slot",
-            "schedule",
-            "doctor-consultation",
-            "ai-diagnosis",
-            "eye-diagnosis",
-          ].includes(item.key),
-      );
-
-    if (role === "doctor") {
-      return fullMenuItems.filter((item) =>
-        [
-          "appointments",
-          "timeslots",
-          "video-chat",
-          "dashboard",
-          "schedule",
-          "doctor-consultation",
-          "ai-diagnosis",
-          "eye-diagnosis",
-        ].includes(item.key),
-      );
-    }
-    if (role === "hospital") {
-      return fullMenuItems.filter((item) =>
-        ["generate-time-slot", "dashboard", "services"].includes(item.key),
-      );
-    }
-
-    return [];
-  }, [role, t]);
 
   useEffect(() => {
     const pathSegments = currentPath.split("/").filter(Boolean);
@@ -196,10 +67,10 @@ const Sidebar: React.FC = () => {
 
   const handleMenuClick = useCallback(
     ({ key }: { key: string }) => {
-      const target = menuItems.find((item) => item.key === key);
+      const target = fullMenuItems.find((item) => item.key === key);
       if (target?.url) navigate(target.url);
     },
-    [navigate, menuItems],
+    [navigate, fullMenuItems],
   );
 
   const transformedMenuItems = useMemo(() => {
@@ -210,8 +81,8 @@ const Sidebar: React.FC = () => {
         label: item.label,
         children: item.children ? transform(item.children) : undefined,
       })) as MenuProps["items"];
-    return transform(menuItems);
-  }, [menuItems]);
+    return transform(fullMenuItems);
+  }, [fullMenuItems]);
 
   const changeLanguage = (lang: "vi" | "en") => {
     i18n.changeLanguage(lang);
@@ -275,7 +146,7 @@ const Sidebar: React.FC = () => {
                 }`}
                 onClick={() => navigate("/")}
               >
-                Deepeyex
+                Res AI
               </div>
             </div>
             <hr className="border-t border-[#8c8c8c48]" />

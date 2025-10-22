@@ -10,7 +10,6 @@ import {
 import { AxiosError } from "axios";
 import { useDispatch } from "react-redux";
 import { setTokens } from "../../../../shares/stores/authSlice";
-import { Doctor } from "../../../doctors/types/doctor";
 
 type LoginOptions = Omit<
   UseMutationOptions<SuccessResponse<TokenResponse>, AxiosError<ErrorResponse>, LoginRequest>,
@@ -25,14 +24,13 @@ export function useLoginMutation(options?: LoginOptions) {
       return await AuthApi.login(form);
     },
     onSuccess: (res, variables, context) => {
-      //sau khi đăng nhập thành công call api get doctor by user id
-      // lưu access token vào redux
+      // Lưu access token và thông tin user vào redux
       dispatch(
         setTokens({
-          accessToken: res.data?.access_token || "",
-          refreshToken: "",
-          userId: res.data?.user_id || "",
+          accessToken: res.data?.accessToken || "",
+          userId: res.data?.userId || "",
           role: res.data?.role || "",
+          user: res.data?.user,
         }),
       );
       options?.onSuccess?.(res, variables, context);

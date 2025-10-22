@@ -1,14 +1,14 @@
-import { Role } from "../enums/role";
-
 type User = {
   id: string;
   username: string;
   email: string;
-  password: string;
-  firebase_uid?: string;
-  role: Role;
+  password?: string;
+  fullName: string;
+  phone: string;
+  roles: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
+  isActive: boolean;
 };
 
 export { User };

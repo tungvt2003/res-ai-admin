@@ -11,7 +11,7 @@ import {
 import { User } from "../types/user";
 import { SuccessResponse } from "../../auth/apis/authApi";
 
-const endpoint = "/private/users";
+const endpoint = "/users";
 
 class UserClient {
   private readonly client: AxiosInstance;

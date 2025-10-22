@@ -7,7 +7,6 @@ import Breadcrumbs from "../shares/components/Breadcrumbs";
 import { persistor, RootState, useAppDispatch } from "../shares/stores";
 import { clearTokens } from "../shares/stores/authSlice";
 import { useSelector } from "react-redux";
-import { useWebSocketContext } from "../shares/contexts/WebSocketContext";
 
 const { Header } = Layout;
 
@@ -15,9 +14,7 @@ const HeaderLayout = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-  const { doctor, role } = useSelector((state: RootState) => state.auth);
-  const { isConnected } = useWebSocketContext();
-  // Menu dropdown cho tài khoản
+  const { user } = useSelector((state: RootState) => state.auth);
   const accountItems: MenuProps["items"] = [
     {
       key: "profile",
@@ -53,34 +50,6 @@ const HeaderLayout = () => {
 
         <div className="flex items-center gap-6">
           <div className="flex items-center gap-4">
-            {/* WebSocket Status - Chỉ hiển thị cho DOCTOR */}
-            {role?.toUpperCase() === "DOCTOR" && (
-              <Tooltip
-                title={
-                  isConnected
-                    ? "WebSocket đã kết nối - Nhận thông báo realtime"
-                    : "WebSocket chưa kết nối"
-                }
-                placement="bottom"
-              >
-                <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-gray-50">
-                  {isConnected ? (
-                    <>
-                      <Badge status="processing" color="green" />
-                      <Wifi className="w-4 h-4 text-green-600" />
-                      <span className="text-xs font-medium text-green-700">Realtime</span>
-                    </>
-                  ) : (
-                    <>
-                      <Badge status="default" />
-                      <WifiOff className="w-4 h-4 text-gray-400" />
-                      <span className="text-xs font-medium text-gray-500">Offline</span>
-                    </>
-                  )}
-                </div>
-              </Tooltip>
-            )}
-
             <Tooltip title={t("header.refresh")} placement="bottom">
               <div
                 onClick={() => window.location.reload()}
@@ -93,7 +62,7 @@ const HeaderLayout = () => {
             <Dropdown menu={{ items: accountItems }} placement="bottomRight" arrow>
               <div className="flex items-center gap-1 cursor-pointer hover:bg-gray-100 px-1 py-0.5 rounded-md transition-all">
                 <UserCog className="w-5 h-5 text-gray-600" />
-                <span className="font-medium">{doctor?.full_name}</span>
+                <span className="font-medium">{user?.fullName}</span>
               </div>
             </Dropdown>
           </div>

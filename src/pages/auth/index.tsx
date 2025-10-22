@@ -1,62 +1,40 @@
 import React from "react";
 import { Button, Col, Form, Input, Layout, Row } from "antd";
-import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { toast, ToastContainer } from "react-toastify";
+import { useNavigate, Link } from "react-router-dom";
 import { useLoginMutation } from "../../modules/auth/hooks/mutations/use-login.mutation";
-import { DoctorApi } from "../../modules/doctors/apis/doctorApi";
-import { useDispatch } from "react-redux";
 import { ROLES } from "../../shares/constants/roles";
 const { Content } = Layout;
-import { setDoctor } from "../../shares/stores/authSlice";
-import { Doctor } from "../../modules/doctors/types/doctor";
-import { loadStringeeSdk } from "../../shares/utils/stringee-sdk-loader";
-import { connectToStringee } from "../../shares/utils/stringee";
-import { CallApi } from "../../modules/call/apis/callApi";
 
 export default function LoginPage() {
-  const dispatch = useDispatch();
-
   const navigate = useNavigate();
   const [loading, setLoading] = React.useState(false);
   const loginMutation = useLoginMutation({
     onSuccess: async (data) => {
-      setLoading(true);
       const tokens = data?.data;
-
-      if (!tokens?.access_token) {
-        toast.error("Login thất bại: Không nhận được token.");
+      if (!tokens?.accessToken) {
+        toast.error("Đăng nhập thất bại: Không nhận được token.");
+        setLoading(false);
         return;
       }
-      if (tokens?.role === ROLES.HOSPITAL) {
-        const doctor = await DoctorApi.getByUserId(data.data?.user_id || "");
-        const payload = {
-          doctor: doctor.data,
-        };
-        dispatch(setDoctor(payload?.doctor ?? ({} as Doctor)));
+      if (tokens?.user?.roles === ROLES.ADMIN) {
+        toast.success("Đăng nhập thành công!");
+        setLoading(false);
+        navigate("/");
+      } else {
+        toast.error("Bạn không có quyền truy cập vào hệ thống!");
+        setLoading(false);
       }
-      if (tokens?.role === ROLES.DOCTOR) {
-        const doctor = await DoctorApi.getByUserId(data.data?.user_id || "");
-        const payload = {
-          doctor: doctor.data,
-        };
-        dispatch(setDoctor(payload?.doctor ?? ({} as Doctor)));
-      }
-      const res = await CallApi.getStringeeToken(data.data?.user_id || "");
-      const stringeeToken = res.data.token;
-      await loadStringeeSdk();
-      connectToStringee(stringeeToken);
-      toast.success("Đăng nhập thành công!");
-      setLoading(false);
-      navigate("/");
     },
-    onError: (error: any) => {
+    onError: () => {
       setLoading(false);
-
-      toast.error(error.response?.data?.message || "Đăng nhập thất bại!");
+      const errorMessage = "Đăng nhập thất bại. Vui lòng kiểm tra lại tài khoản và mật khẩu!";
+      toast.error(errorMessage);
     },
   });
 
   const handleLogin = (values: { username: string; password: string }) => {
+    setLoading(true);
     loginMutation.mutate(values);
   };
 
@@ -69,6 +47,16 @@ export default function LoginPage() {
         justifyContent: "center",
       }}
     >
+      <ToastContainer
+        position="top-right"
+        autoClose={3000}
+        newestOnTop
+        closeOnClick
+        pauseOnHover
+        draggable
+        theme="colored"
+        style={{ zIndex: 9999 }}
+      />
       <Content className="w-full max-w-[70%] p-8 rounded-lg flex items-center justify-center">
         <Row
           justify="center"
@@ -135,6 +123,13 @@ export default function LoginPage() {
 
               <div className="text-center mt-2.5 text-sm">
                 <a href="#">Quên mật khẩu</a>
+              </div>
+
+              <div className="text-center mt-2.5 text-sm">
+                Chưa có tài khoản?{" "}
+                <Link to="/register" className="text-blue-500 hover:text-blue-700">
+                  Đăng ký ngay
+                </Link>
               </div>
             </Form>
           </Col>

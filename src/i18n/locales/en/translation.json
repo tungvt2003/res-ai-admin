@@ -405,6 +405,11 @@
       "update_error": "Failed to update user"
     },
     "form": {
+      "fullName": "Full Name",
+      "fullName_placeholder": "Enter full name",
+      "fullName_required": "Full name is required",
+      "fullName_min": "Full name must be at least 2 characters",
+
       "username": "Username",
       "username_placeholder": "Enter username",
       "username_required": "Username is required",
@@ -415,10 +420,10 @@
       "email_required": "Email is required",
       "email_invalid": "Invalid email address",
 
-      "firebase_uid": "Firebase UID",
-      "firebase_uid_placeholder": "Enter Firebase UID",
-      "firebase_uid_required": "Firebase UID is required",
-      "firebase_uid_min": "Firebase UID must be at least 6 characters",
+      "phone": "Phone Number",
+      "phone_placeholder": "Enter phone number",
+      "phone_required": "Phone number is required",
+      "phone_pattern": "Phone number must be 10-11 digits",
 
       "role": "Role",
       "role_placeholder": "Select role",

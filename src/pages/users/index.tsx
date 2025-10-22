@@ -1,17 +1,16 @@
-import { DeleteOutlined, EditOutlined } from "@ant-design/icons";
-import { Alert, Button, Form, Input, Modal, Select, Space, Spin, Tag } from "antd";
+import { Alert, Form, Input, Modal, Select, Space, Spin, Tag } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import CrudTable from "../../shares/components/CrudTable.tsx";
-import AdvancedFilter, { FilterField } from "../../shares/components/AdvancedFilter.tsx";
+import { FilterField } from "../../shares/components/AdvancedFilter.tsx";
 import { useQueryClient } from "@tanstack/react-query";
 import { User } from "../../modules/users/types/user.ts";
 import { useListUsersQuery } from "../../modules/users/hooks/queries/use-get-users.query.ts";
 import { useDeleteUserMutation } from "../../modules/users/hooks/mutations/use-delete-user.mutation.ts";
 import { toast } from "react-toastify";
 import { QueryKeyEnum } from "../../shares/enums/queryKey.ts";
-import { Role } from "../../modules/users/enums/role.ts";
+import { Role, RoleLabel } from "../../modules/users/enums/role.ts";
 import { useCreateUserMutation } from "../../modules/users/hooks/mutations/use-create-user.mutation.ts";
 import { useUpdateUserMutation } from "../../modules/users/hooks/mutations/use-update-user.mutation.ts";
 import z from "zod";
@@ -26,46 +25,44 @@ export default function UserPage() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>([]);
-  const [filterParams, setFilterParams] = useState<Record<string, any>>({});
+  const [filterParams, setFilterParams] = useState<Record<string, string | number>>({});
 
   const { data, isLoading, isError } = useListUsersQuery({ filters: filterParams });
 
   const roleColors: Record<Role, string> = {
-    [Role.Patient]: "green",
-    [Role.Doctor]: "blue",
+    [Role.User]: "green",
     [Role.Admin]: "red",
-    [Role.Hospital]: "purple",
   };
 
   // ---- Mutation: Delete
   const deleteUser = useDeleteUserMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(t("user.messages.delete_success"));
       queryClient.invalidateQueries({ queryKey: [QueryKeyEnum.User] });
     },
-    onError: (error) => {
+    onError: () => {
       toast.error(t("user.messages.delete_error"));
     },
   });
 
   // ---- Mutation: Create ----
   const createUser = useCreateUserMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(t("user.messages.create_success"));
       queryClient.invalidateQueries({ queryKey: [QueryKeyEnum.User] });
     },
-    onError: (error) => {
+    onError: () => {
       toast.error(t("user.messages.create_error"));
     },
   });
 
   // ---- Mutation: Update ----
   const updateUser = useUpdateUserMutation({
-    onSuccess: (data) => {
+    onSuccess: () => {
       toast.success(t("user.messages.update_success"));
       queryClient.invalidateQueries({ queryKey: [QueryKeyEnum.User] });
     },
-    onError: (error) => {
+    onError: () => {
       toast.error(t("user.messages.update_error"));
     },
   });
@@ -91,15 +88,13 @@ export default function UserPage() {
       type: "select",
       width: "100%",
       options: [
-        { label: t("user.roles.admin"), value: Role.Admin },
-        { label: t("user.roles.doctor"), value: Role.Doctor },
-        { label: t("user.roles.patient"), value: Role.Patient },
-        { label: t("user.roles.hospital"), value: Role.Hospital },
+        { label: "Quản trị viên", value: Role.Admin },
+        { label: "Người dùng", value: Role.User },
       ],
     },
   ];
 
-  const handleFilter = (filterValues: Record<string, any>) => {
+  const handleFilter = (filterValues: Record<string, string | number>) => {
     // Gửi filter params lên API
     setFilterParams(filterValues);
   };
@@ -120,10 +115,9 @@ export default function UserPage() {
     form.setFieldsValue({
       username: user.username,
       email: user.email,
-      role: user.role,
-      firebase_uid: user.firebase_uid,
-      password: user.password,
-      confirmPassword: user.password,
+      fullName: user.fullName,
+      phone: user.phone,
+      roles: user.roles,
     });
     setIsModalOpen(true);
   };
@@ -131,10 +125,21 @@ export default function UserPage() {
   const handleSubmit = async () => {
     try {
       const values = await form.validateFields();
+
+      // Tạo submitData và loại bỏ confirmPassword
+      const submitData = {
+        username: values.username,
+        email: values.email,
+        fullName: values.fullName,
+        phone: values.phone,
+        roles: values.roles,
+        ...(values.password && { password: values.password }),
+      };
+
       if (editingUser) {
-        updateUser.mutate({ id: editingUser.id, body: values });
+        updateUser.mutate({ id: editingUser.id, body: submitData });
       } else {
-        createUser.mutate(values);
+        createUser.mutate(submitData);
       }
       setIsModalOpen(false);
       form.resetFields();
@@ -156,27 +161,27 @@ export default function UserPage() {
 
   // ---- Columns ----
   const columns: ColumnsType<User> = [
-    { title: t("user.columns.id"), dataIndex: "id", key: "id", width: "10%" },
-    { title: t("user.columns.username"), dataIndex: "username", key: "username", width: "20%" },
-    { title: t("user.columns.email"), dataIndex: "email", key: "email", width: "15%" },
+    { title: "ID", dataIndex: "id", key: "id", width: "10%" },
+    { title: "Tài khoản", dataIndex: "username", key: "username", width: "15%" },
+    { title: "Tên người dùng", dataIndex: "fullName", key: "fullName", width: "15%" },
+    { title: "Email", dataIndex: "email", key: "email", width: "15%" },
+    { title: "Số điện thoại", dataIndex: "phone", key: "phone", width: "15%" },
     {
-      title: t("user.columns.firebase_uid"),
-      dataIndex: "firebase_uid",
-      key: "firebase_uid",
+      title: "Vai trò",
+      dataIndex: "roles",
+      key: "roles",
       width: "10%",
-    },
-    {
-      title: t("user.columns.role"),
-      dataIndex: "role",
-      key: "role",
-      width: "25%",
-      render: (role: Role) => (
-        <Tag color={roleColors[role]}>{t(`user.roles.${role.toLowerCase()}`)}</Tag>
+      render: (roles: string) => (
+        <Space>
+          <Tag key={roles} color={roleColors[roles as Role] || "blue"}>
+            {roles}
+          </Tag>
+        </Space>
       ),
     },
     {
-      title: t("user.columns.time"),
-      dataIndex: "created_at",
+      title: "Thời gian tạo",
+      dataIndex: "createdAt",
       key: "time",
       width: "20%",
     },
@@ -218,8 +223,20 @@ export default function UserPage() {
         onCancel={() => setIsModalOpen(false)}
         onOk={handleSubmit}
         destroyOnClose
+        width={600}
       >
         <Form form={form} layout="vertical">
+          <Form.Item
+            name="fullName"
+            label={t("user.form.fullName")}
+            rules={[
+              { required: true, message: t("user.form.fullName_required") },
+              { min: 2, message: t("user.form.fullName_min") },
+            ]}
+          >
+            <Input placeholder={t("user.form.fullName_placeholder")} />
+          </Form.Item>
+
           <Form.Item
             name="username"
             label={t("user.form.username")}
@@ -229,20 +246,6 @@ export default function UserPage() {
             ]}
           >
             <Input placeholder={t("user.form.username_placeholder")} />
-          </Form.Item>
-
-          <Form.Item
-            name="role"
-            label={t("user.form.role")}
-            rules={[{ required: true, message: t("user.form.role_required") }]}
-          >
-            <Select placeholder={t("user.form.role_placeholder")}>
-              {Object.values(Role).map((role) => (
-                <Option key={role} value={role}>
-                  {t(`user.roles.${role.toLowerCase()}`)}
-                </Option>
-              ))}
-            </Select>
           </Form.Item>
 
           <Form.Item
@@ -257,26 +260,39 @@ export default function UserPage() {
           </Form.Item>
 
           <Form.Item
-            name="firebase_uid"
-            label={t("user.form.firebase_uid")}
+            name="phone"
+            label={t("user.form.phone")}
             rules={[
-              { required: true, message: t("user.form.firebase_uid_required") },
-              { min: 6, message: t("user.form.firebase_uid_min") },
+              { required: true, message: t("user.form.phone_required") },
+              {
+                pattern: /^[0-9]{10,11}$/,
+                message: t("user.form.phone_pattern"),
+              },
             ]}
           >
-            <Input placeholder={t("user.form.firebase_uid_placeholder")} />
+            <Input placeholder={t("user.form.phone_placeholder")} />
+          </Form.Item>
+
+          <Form.Item
+            name="roles"
+            label={t("user.form.role")}
+            rules={[{ required: true, message: t("user.form.role_required") }]}
+          >
+            <Select placeholder={t("user.form.role_placeholder")}>
+              {Object.values(Role).map((role) => (
+                <Option key={role} value={role}>
+                  {RoleLabel[role as Role]}
+                </Option>
+              ))}
+            </Select>
           </Form.Item>
 
           <Form.Item
             name="password"
             label={t("user.form.password")}
             rules={[
-              { required: true, message: t("user.form.password_required") },
+              { required: !editingUser, message: t("user.form.password_required") },
               { min: 6, message: t("user.form.password_min") },
-              {
-                pattern: /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/,
-                message: t("user.form.password_pattern"),
-              },
             ]}
             hasFeedback
           >
@@ -289,7 +305,7 @@ export default function UserPage() {
             dependencies={["password"]}
             hasFeedback
             rules={[
-              { required: true, message: t("user.form.confirmPassword_required") },
+              { required: !editingUser, message: t("user.form.confirmPassword_required") },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue("password") === value) {

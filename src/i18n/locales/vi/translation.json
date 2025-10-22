@@ -453,6 +453,11 @@
       "update_error": "Cập nhật tài khoản thất bại"
     },
     "form": {
+      "fullName": "Họ và tên",
+      "fullName_placeholder": "Nhập họ và tên",
+      "fullName_required": "Họ và tên không được để trống",
+      "fullName_min": "Họ và tên phải có ít nhất 2 ký tự",
+
       "username": "Tài khoản",
       "username_placeholder": "Nhập tài khoản người dùng",
       "username_required": "Tài khoản không được để trống",
@@ -463,10 +468,10 @@
       "email_required": "Email không được để trống",
       "email_invalid": "Email không hợp lệ",
 
-      "firebase_uid": "Firebase UID",
-      "firebase_uid_placeholder": "Nhập Firebase UID người dùng",
-      "firebase_uid_required": "Firebase UID không được để trống",
-      "firebase_uid_min": "Firebase UID phải có ít nhất 6 ký tự",
+      "phone": "Số điện thoại",
+      "phone_placeholder": "Nhập số điện thoại",
+      "phone_required": "Số điện thoại không được để trống",
+      "phone_pattern": "Số điện thoại phải có 10-11 chữ số",
 
       "role": "Vai trò",
       "role_placeholder": "Chọn vai trò",
