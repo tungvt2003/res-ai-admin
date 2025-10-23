@@ -1,9 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import { Layout, Dropdown, Tooltip, type MenuProps, Badge } from "antd";
 import { LogOut, UserCog, UserPen, LockKeyhole, RefreshCw, Wifi, WifiOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { useNavigate } from "react-router-dom";
 import Breadcrumbs from "../shares/components/Breadcrumbs";
+import ChangePasswordModal from "../shares/components/ChangePasswordModal";
 import { persistor, RootState, useAppDispatch } from "../shares/stores";
 import { clearTokens } from "../shares/stores/authSlice";
 import { useSelector } from "react-redux";
@@ -15,18 +16,19 @@ const HeaderLayout = () => {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+  const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] = useState(false);
   const accountItems: MenuProps["items"] = [
-    {
-      key: "profile",
-      icon: <UserPen size={18} />,
-      label: <span>{t("header.profile")}</span>,
-      onClick: () => navigate("/profile"),
-    },
+    // {
+    //   key: "profile",
+    //   icon: <UserPen size={18} />,
+    //   label: <span>{t("header.profile")}</span>,
+    //   onClick: () => navigate("/profile"),
+    // },
     {
       key: "change-password",
       icon: <LockKeyhole size={18} />,
       label: <span>{t("header.changePassword")}</span>,
-      onClick: () => navigate("/change-password"),
+      onClick: () => setIsChangePasswordModalOpen(true),
     },
     {
       type: "divider",
@@ -68,6 +70,11 @@ const HeaderLayout = () => {
           </div>
         </div>
       </div>
+
+      <ChangePasswordModal
+        open={isChangePasswordModalOpen}
+        onCancel={() => setIsChangePasswordModalOpen(false)}
+      />
     </Header>
   );
 };

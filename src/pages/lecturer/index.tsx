@@ -72,7 +72,7 @@ export default function LecturerPage() {
   // Filter fields cho Lecturer
   const lecturerFilterFields: FilterField[] = [
     {
-      name: "search",
+      name: "fullName",
       label: "Tìm kiếm",
       type: "text",
       placeholder: "Tìm theo tên giảng viên",

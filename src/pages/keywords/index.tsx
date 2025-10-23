@@ -66,7 +66,7 @@ export default function KeywordPage() {
   // Filter fields cho Keyword
   const keywordFilterFields: FilterField[] = [
     {
-      name: "search",
+      name: "name",
       label: "Tìm kiếm",
       type: "text",
       placeholder: "Tìm theo tên từ khóa",

@@ -76,7 +76,7 @@ export default function UserPage() {
   // Filter fields cho User
   const userFilterFields: FilterField[] = [
     {
-      name: "search",
+      name: "username",
       label: "Tìm kiếm",
       type: "text",
       placeholder: "Tìm theo username",

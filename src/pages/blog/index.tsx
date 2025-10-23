@@ -44,7 +44,7 @@ export default function BlogPage() {
   // Filter fields cho Blog
   const blogFilterFields: FilterField[] = [
     {
-      name: "search",
+      name: "title",
       label: "Tìm kiếm",
       type: "text",
       placeholder: "Tìm theo tiêu đề bài viết",

@@ -74,6 +74,22 @@ export const KEYWORDS: PathItem = {
   },
 };
 
+export const SETTINGS: PathItem = {
+  DETAIL: {
+    PATH: "/settings",
+    LABEL: "Cấu hình hệ thống",
+    BREADCRUMB: [{ title: "Cấu hình", href: "/settings" }],
+  },
+  CONFIG: {
+    PATH: "/settings/:key",
+    LABEL: "Chi tiết cấu hình",
+    BREADCRUMB: [
+      { title: "Cấu hình", href: "/settings" },
+      { title: "Chi tiết", href: "" },
+    ],
+  },
+};
+
 export const USERS: PathItem = {
   DETAIL: {
     PATH: "/users",

@@ -121,9 +121,9 @@ export default function LoginPage() {
                 </Button>
               </Form.Item>
 
-              <div className="text-center mt-2.5 text-sm">
+              {/* <div className="text-center mt-2.5 text-sm">
                 <a href="#">Quên mật khẩu</a>
-              </div>
+              </div> */}
 
               <div className="text-center mt-2.5 text-sm">
                 Chưa có tài khoản?{" "}

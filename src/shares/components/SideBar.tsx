@@ -66,6 +66,12 @@ const Sidebar: React.FC = () => {
       icon: <FaSearch className="w-5 h-5" />,
       url: "/keywords",
     },
+    {
+      key: "settings",
+      label: "Cấu hình hệ thống",
+      icon: <IoIosSettings className="w-5 h-5" />,
+      url: "/settings",
+    },
   ];
 
   useEffect(() => {
@@ -102,18 +108,7 @@ const Sidebar: React.FC = () => {
     return transform(fullMenuItems);
   }, [fullMenuItems]);
 
-  const changeLanguage = (lang: "vi" | "en") => {
-    i18n.changeLanguage(lang);
-    setIsLangModalVisible(false);
-  };
-
   const settingsItems: MenuProps["items"] = [
-    {
-      key: "change-language",
-      icon: <Globe size={18} />,
-      label: <span>{t("sidebar.changeLanguage")}</span>,
-      onClick: () => setIsLangModalVisible(true),
-    },
     {
       key: "logout",
       icon: <LogOut size={18} className="text-red-500" />,
@@ -195,28 +190,6 @@ const Sidebar: React.FC = () => {
           </div>
         </div>
       </Sider>
-
-      <Modal
-        title={t("sidebar.changeLanguage")}
-        open={isLangModalVisible}
-        footer={null}
-        onCancel={() => setIsLangModalVisible(false)}
-      >
-        <div className="flex justify-around items-center">
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/2/21/Flag_of_Vietnam.svg"
-            alt="Vietnamese"
-            className="w-16 h-16 cursor-pointer hover:scale-110 transition-all duration-200"
-            onClick={() => changeLanguage("vi")}
-          />
-          <img
-            src="https://upload.wikimedia.org/wikipedia/en/a/ae/Flag_of_the_United_Kingdom.svg"
-            alt="English"
-            className="w-16 h-16 cursor-pointer hover:scale-110 transition-all duration-200"
-            onClick={() => changeLanguage("en")}
-          />
-        </div>
-      </Modal>
     </>
   );
 };

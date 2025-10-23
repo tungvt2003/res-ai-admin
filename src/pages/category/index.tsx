@@ -66,17 +66,10 @@ export default function CategoryPage() {
   // Filter fields cho Category
   const categoryFilterFields: FilterField[] = [
     {
-      name: "search",
+      name: "name",
       label: "Tìm kiếm",
       type: "text",
       placeholder: "Tìm theo tên danh mục",
-      width: "100%",
-    },
-    {
-      name: "slug",
-      label: "Slug",
-      type: "text",
-      placeholder: "Tìm theo slug",
       width: "100%",
     },
   ];

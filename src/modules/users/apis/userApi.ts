@@ -54,6 +54,14 @@ class UserClient {
     const response = await this.client.post<SuccessResponse>("/public/reset-password", payload);
     return response.data;
   }
+
+  // ---------------- Update Password ----------------
+  async updatePassword(userId: string, password: string): Promise<SuccessResponse> {
+    const response = await this.client.patch<SuccessResponse>(`${endpoint}/${userId}/password`, {
+      password,
+    });
+    return response.data;
+  }
 }
 
 const UserApi = new UserClient();
