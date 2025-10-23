@@ -1,3 +1,5 @@
+import { Keyword } from "../../keywords/types/keyword";
+
 type Lecturer = {
   id: string;
   fullName: string;
@@ -9,7 +11,7 @@ type Lecturer = {
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
-  keywords: string[];
+  keywords: Keyword[];
 };
 
 export { Lecturer };

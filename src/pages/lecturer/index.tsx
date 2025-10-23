@@ -1,4 +1,4 @@
-import { Alert, Form, Input, Modal, Spin, Tag, Upload, Image } from "antd";
+import { Alert, Form, Input, Modal, Spin, Tag, Upload, Image, Select } from "antd";
 import { UploadOutlined } from "@ant-design/icons";
 import type { ColumnsType } from "antd/es/table";
 import type { UploadFile } from "antd/es/upload/interface";
@@ -15,6 +15,7 @@ import { useCreateLecturerMutation } from "../../modules/lecturers/hooks/mutatio
 import { useUpdateLecturerMutation } from "../../modules/lecturers/hooks/mutations/use-update-lecturer.mutation.ts";
 import z from "zod";
 import { getApiUrl } from "../../shares/utils/utils.ts";
+import { useListKeywordsQuery } from "../../modules/keywords/hooks/queries/use-get-keywords.query.ts";
 
 export default function LecturerPage() {
   const queryClient = useQueryClient();
@@ -27,6 +28,7 @@ export default function LecturerPage() {
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const { data, isLoading, isError } = useListLecturersQuery({ filters: filterParams });
+  const { data: keywordsData } = useListKeywordsQuery();
 
   // ---- Mutation: Delete ----
   const deleteLecturer = useDeleteLecturerMutation({
@@ -113,6 +115,7 @@ export default function LecturerPage() {
       workUnit: lecturer.workUnit,
       position: lecturer.position,
       website: lecturer.website,
+      keywordIds: lecturer.keywords?.map((k) => k.id) || [],
     });
 
     // Set existing image if available
@@ -142,6 +145,7 @@ export default function LecturerPage() {
         workUnit: values.workUnit,
         position: values.position,
         website: values.website || undefined,
+        keywordIds: values.keywordIds || [],
         image: fileList.length > 0 ? fileList : undefined,
       };
 
@@ -215,20 +219,44 @@ export default function LecturerPage() {
       title: "Chức vụ",
       dataIndex: "position",
       key: "position",
-      width: "15%",
+      width: "12%",
     },
+    // {
+    //   title: "Từ khóa",
+    //   dataIndex: "keywords",
+    //   key: "keywords",
+    //   width: "18%",
+    //   render: (keywords: Array<{ id: string; name: string }>) => (
+    //     <div className="flex flex-wrap gap-1">
+    //       {keywords && keywords.length > 0 ? (
+    //         keywords.slice(0, 3).map((keyword) => (
+    //           <Tag key={keyword.id} color="purple" className="text-xs">
+    //             {keyword.name}
+    //           </Tag>
+    //         ))
+    //       ) : (
+    //         <span className="text-gray-400 text-xs">Chưa có</span>
+    //       )}
+    //       {keywords && keywords.length > 3 && (
+    //         <Tag color="default" className="text-xs">
+    //           +{keywords.length - 3}
+    //         </Tag>
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       title: "Website",
       dataIndex: "website",
       key: "website",
-      width: "20%",
+      width: "15%",
       render: (website: string) =>
         website ? (
           <a
             href={website}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
+            className="text-blue-500 hover:underline truncate block"
           >
             {website}
           </a>
@@ -355,6 +383,22 @@ export default function LecturerPage() {
             ]}
           >
             <Input placeholder="https://example.com" />
+          </Form.Item>
+
+          <Form.Item name="keywordIds" label="Từ khóa chuyên môn">
+            <Select
+              mode="multiple"
+              placeholder="Chọn các từ khóa liên quan"
+              allowClear
+              showSearch
+              filterOption={(input, option) =>
+                (option?.label ?? "").toLowerCase().includes(input.toLowerCase())
+              }
+              options={keywordsData?.data?.map((keyword) => ({
+                label: keyword.name,
+                value: keyword.id,
+              }))}
+            />
           </Form.Item>
         </Form>
       </Modal>

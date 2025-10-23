@@ -3,4 +3,5 @@ export enum QueryKeyEnum {
   Lecturer = "lecturers",
   Category = "categories",
   Blog = "blogs",
+  Keyword = "keywords",
 }

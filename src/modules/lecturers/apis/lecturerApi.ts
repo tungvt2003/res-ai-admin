@@ -20,7 +20,11 @@ class LecturerClient {
   // ---------------- Create Lecturer ----------------
   async create(lecturerBody: FormData): Promise<CreateLecturerResponse> {
     // Don't set Content-Type for FormData - Axios will auto-detect and add boundary
-    const response = await this.client.post<CreateLecturerResponse>(endpoint, lecturerBody);
+    const response = await this.client.post<CreateLecturerResponse>(endpoint, lecturerBody, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
     return response.data;
   }
 

@@ -16,6 +16,7 @@ import CategoryPage from "../pages/category";
 import BlogPage from "../pages/blog";
 import CreateBlogPage from "../pages/blog/create";
 import EditBlogPage from "../pages/blog/edit";
+import KeywordPage from "../pages/keywords";
 
 export const Navigator = () => {
   return (
@@ -33,6 +34,7 @@ export const Navigator = () => {
             <Route path={Paths.USERS.DETAIL.PATH} element={<UserPage />} />
             <Route path={Paths.LECTURERS.DETAIL.PATH} element={<LecturerPage />} />
             <Route path={Paths.CATEGORIES.DETAIL.PATH} element={<CategoryPage />} />
+            <Route path={Paths.KEYWORDS.DETAIL.PATH} element={<KeywordPage />} />
             <Route path={Paths.BLOGS.DETAIL.PATH} element={<BlogPage />} />
             <Route path={Paths.BLOGS.CREATE.PATH} element={<CreateBlogPage />} />
             <Route path={Paths.BLOGS.EDIT.PATH} element={<EditBlogPage />} />

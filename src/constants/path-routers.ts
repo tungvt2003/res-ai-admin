@@ -66,6 +66,14 @@ export const BLOGS: PathItem = {
   },
 };
 
+export const KEYWORDS: PathItem = {
+  DETAIL: {
+    PATH: "/keywords",
+    LABEL: "Từ khóa",
+    BREADCRUMB: [{ title: "Từ khóa", href: "/keywords" }],
+  },
+};
+
 export const USERS: PathItem = {
   DETAIL: {
     PATH: "/users",
