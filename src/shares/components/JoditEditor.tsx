@@ -1,11 +1,11 @@
 "use client";
 
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import JoditEditor from "jodit-react";
-import { IJodit } from "jodit/esm/types";
-import React, { useRef, useMemo, useState } from "react";
+import type { IJodit } from "jodit/esm/types";
 import "../styles/jodit-custom.css";
 
-interface JoditEditorProps {
+export interface JoditEditorProps {
   value?: string;
   onChange?: (newContent: string) => void;
   className?: string;
@@ -18,6 +18,11 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
 }) => {
   const editor = useRef<IJodit | null>(null);
   const [content, setContent] = useState(value);
+
+  // Đồng bộ khi value từ ngoài đổi (form reset / load dữ liệu)
+  useEffect(() => {
+    setContent(value);
+  }, [value]);
 
   const config = useMemo(
     () => ({
@@ -33,11 +38,11 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
       showXPathInStatusbar: false,
       askBeforePasteHTML: false,
       askBeforePasteFromWord: false,
-      uploader: {
-        insertImageAsBase64URI: true,
-      },
 
-      // ⚙️ Toolbar đầy đủ, loại bỏ h1-h2-h3 rời vì đã có paragraph dropdown
+      // Dán ảnh base64 (tùy nhu cầu có thể tắt)
+      uploader: { insertImageAsBase64URI: true },
+
+      // ⚙️ Toolbar (đã có "paragraph" nên bỏ H1/H2/H3 riêng lẻ)
       buttons: [
         "source",
         "|",
@@ -74,8 +79,6 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
         "fullsize",
         "preview",
       ],
-
-      // ⚙️ Responsive toolbar
       buttonsMD: [
         "source",
         "|",
@@ -118,18 +121,22 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
       ],
       buttonsXS: ["bold", "italic", "|", "ul", "ol", "|", "paragraph", "|", "image"],
 
-      // ⚙️ Quan trọng: để Jodit giữ nguyên <h1>, <h2> mà không ép về <p>
+      // ⚙️ Cực quan trọng: Cho phép đầy đủ thẻ TABLE + tránh xóa phần tử rỗng
+      // (tbody/thead/tfoot/caption/col/colgroup nếu không allow dễ bị cắt)
       cleanHTML: {
         allowTags: {
+          // heading
           h1: true,
           h2: true,
           h3: true,
           h4: true,
           h5: true,
           h6: true,
+          // text
           p: true,
           div: true,
           span: true,
+          br: true,
           strong: true,
           em: true,
           u: true,
@@ -137,23 +144,39 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
           ul: true,
           ol: true,
           li: true,
-          img: true,
           a: true,
+          img: true,
+          // table
           table: true,
+          thead: true,
+          tbody: true,
+          tfoot: true,
           tr: true,
-          td: true,
           th: true,
-          br: true,
+          td: true,
+          caption: true,
+          col: true,
+          colgroup: true,
         },
+        removeEmptyElements: false, // giữ lại td/tr rỗng ngay sau khi chèn
         removeEmptyBlocks: false,
       },
 
-      // ⚙️ Hành vi xuống dòng chuẩn, không ép thành <br> hoặc <p>
-      // Bỏ enter / enterBlock để Jodit tự quản lý block
-      // enter: "BR" as const,
-      // enterBlock: "P" as const,
+      // ⚙️ Dán: GIỮ NGUYÊN HTML (tránh clear làm mất cấu trúc table)
+      defaultActionOnPaste: "insert_as_html",
 
-      defaultActionOnPaste: "insert_clear_html",
+      // Tùy chọn: can thiệp khi dán, có thể tinh chỉnh nếu vẫn bị strip bởi nguồn lạ
+      events: {
+        afterInit: (j: IJodit) => {
+          j.container.classList.add("jodit-theme-custom");
+        },
+        // Ví dụ: đảm bảo table không bị purifier tác động quá tay
+        beforePaste: (_e: ClipboardEvent, data: { html?: string; text?: string }) => {
+          // Nếu nội dung có table mà clean quá tay, ta có thể “nới tay” thêm ở đây:
+          // data.html = data.html; // để nguyên — placeholder này giữ chỗ cho việc tuỳ biến sau
+        },
+      },
+
       textIcons: false,
       styles: {
         body: {
@@ -162,20 +185,13 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
           color: "#333",
         },
       },
-      events: {
-        afterInit: (j: IJodit) => {
-          j.container.classList.add("jodit-theme-custom");
-        },
-      },
     }),
     [],
   );
 
   const handleBlur = (newContent: string) => {
     setContent(newContent);
-    if (onChange) {
-      onChange(newContent);
-    }
+    onChange?.(newContent);
   };
 
   return (

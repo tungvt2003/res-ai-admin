@@ -27,3 +27,39 @@
 .jodit-theme-custom .jodit-wysiwyg h1 + p,
 .jodit-theme-custom .jodit-wysiwyg h2 + p,
 .jodit-theme-custom .jodit-wysiwyg h3 + p{ margin-top:.25em; }
+/* Theme hook ở afterInit */
+.jodit-theme-custom .jodit-toolbar__box {
+  border-radius: 8px;
+}
+
+/* Hiển thị bảng rõ ràng trong khung soạn thảo */
+.jodit-wysiwyg table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.jodit-wysiwyg th,
+.jodit-wysiwyg td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  vertical-align: top;
+}
+
+.jodit-wysiwyg thead th {
+  background: #f7f7f7;
+  font-weight: 600;
+}
+
+.jodit-wysiwyg caption {
+  caption-side: top;
+  text-align: left;
+  padding: 4px 0 8px;
+  color: #666;
+  font-size: 14px;
+}
+
+/* Bảng có thể kéo giãn cột (tùy trình duyệt) */
+.jodit-wysiwyg col,
+.jodit-wysiwyg colgroup {
+  width: auto;
+}
