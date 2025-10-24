@@ -3,7 +3,7 @@ import { store } from "../stores";
 import { clearTokens, setTokens } from "../stores/authSlice";
 
 const api: AxiosInstance = axios.create({
-  baseURL: "http://localhost:9999",
+  baseURL: import.meta.env.VITE_API_URL,
   timeout: 5000,
   headers: {
     "Content-Type": "application/json",
