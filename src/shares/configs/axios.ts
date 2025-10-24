@@ -1,6 +1,5 @@
 import axios, { AxiosInstance } from "axios";
 import { store } from "../stores";
-import { clearTokens, setTokens } from "../stores/authSlice";
 
 const api: AxiosInstance = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
