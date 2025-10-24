@@ -124,7 +124,7 @@ export default function BlogPage() {
       dataIndex: "category",
       key: "category",
       width: "15%",
-      render: (category: Blog["category"]) => <Tag color="blue">{category.name}</Tag>,
+      render: (category: Blog["category"]) => <Tag color="blue">{category?.name || ""}</Tag>,
     },
     {
       title: "Trạng thái",
