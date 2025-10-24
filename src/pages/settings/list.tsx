@@ -167,7 +167,7 @@ export default function SettingsListPage() {
         title={
           <div className="flex items-center gap-2">
             <SettingOutlined className="text-xl" />
-            <span className="text-xl font-semibold">Quản lý cấu hình hệ thống</span>
+            <span className="text-xl font-semibold">Quản lý cấu hình Tree</span>
           </div>
         }
         extra={
@@ -203,10 +203,10 @@ export default function SettingsListPage() {
             label="Key"
             rules={[
               { required: true, message: "Vui lòng nhập key" },
-              { pattern: /^[a-z_]+$/, message: "Key chỉ được chứa chữ thường và dấu gạch dưới" },
+              { pattern: /^[a-z-]+$/, message: "Key chỉ được chứa chữ thường và dấu gạch ngang" },
             ]}
           >
-            <Input placeholder="Ví dụ: research_hierarchy" />
+            <Input placeholder="Ví dụ: tam-ly-hoc" />
           </Form.Item>
 
           <Form.Item

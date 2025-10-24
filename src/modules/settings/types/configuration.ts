@@ -3,7 +3,8 @@
 export type LecturerItem = {
   id: string;
   name: string;
-  academicTitle?: string;
+  academicRank?: string;
+  academicDegree?: string;
   workUnit?: string;
   position?: string;
   image?: string | null;

@@ -437,7 +437,8 @@ export default function SettingsDetailPage() {
                                               ...l,
                                               id: selectedLecturer.id,
                                               name: selectedLecturer.fullName,
-                                              academicTitle: selectedLecturer.academicTitle,
+                                              academicRank: selectedLecturer.academicRank,
+                                              academicDegree: selectedLecturer.academicDegree,
                                               workUnit: selectedLecturer.workUnit,
                                               position: selectedLecturer.position,
                                               image: selectedLecturer.image,
@@ -467,7 +468,8 @@ export default function SettingsDetailPage() {
             const newLecturer: LecturerItem = {
               id: selectedLecturer.id,
               name: selectedLecturer.fullName,
-              academicTitle: selectedLecturer.academicTitle,
+              academicRank: selectedLecturer.academicRank,
+              academicDegree: selectedLecturer.academicDegree,
               workUnit: selectedLecturer.workUnit,
               position: selectedLecturer.position,
               image: selectedLecturer.image,
@@ -796,7 +798,8 @@ export default function SettingsDetailPage() {
                                         className="cursor-pointer"
                                       >
                                         {lecturer.name}{" "}
-                                        {lecturer.academicTitle && `(${lecturer.academicTitle})`}
+                                        {lecturer.academicRank && `(${lecturer.academicRank})`}
+                                        {lecturer.academicDegree && `(${lecturer.academicDegree})`}
                                         {lecturer.workUnit && ` - ${lecturer.workUnit}`}
                                       </Tag>
                                     ))
@@ -844,7 +847,7 @@ export default function SettingsDetailPage() {
                 }
                 loading={lecturersLoading}
                 options={lecturersData?.data?.map((lecturer) => ({
-                  label: `${lecturer.fullName} (${lecturer.academicTitle})`,
+                  label: `${lecturer.fullName} (${lecturer.academicRank})`,
                   value: lecturer.id,
                 }))}
               />
