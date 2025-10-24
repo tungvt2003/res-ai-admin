@@ -3,7 +3,8 @@ import { Keyword } from "../../keywords/types/keyword";
 type Lecturer = {
   id: string;
   fullName: string;
-  academicTitle: string;
+  academicDegree: string;
+  academicRank: string;
   workUnit: string;
   position: string;
   image: string | null;

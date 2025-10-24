@@ -17,6 +17,24 @@ import z from "zod";
 import { getApiUrl } from "../../shares/utils/utils.ts";
 import { useListKeywordsQuery } from "../../modules/keywords/hooks/queries/use-get-keywords.query.ts";
 
+// Enum mappings
+const academicRankMap = {
+  gs: "Giáo sư",
+  pgs: "Phó giáo sư",
+  none: "Không có học hàm",
+};
+
+const academicDegreeMap = {
+  ts: "Tiến sĩ",
+  ths: "Thạc sĩ",
+  cn: "Cử nhân",
+  ks: "Kỹ sư",
+  ds: "Dược sĩ",
+  bs: "Bác sĩ",
+  tc: "Trung cấp",
+  khac: "Khác",
+};
+
 export default function LecturerPage() {
   const queryClient = useQueryClient();
   const [form] = Form.useForm();
@@ -79,15 +97,30 @@ export default function LecturerPage() {
       width: "100%",
     },
     {
-      name: "academicTitle",
+      name: "academicRank",
       label: "Học hàm",
       type: "select",
       width: "100%",
       options: [
-        { label: "Giáo sư (GS)", value: "GS" },
-        { label: "Phó Giáo sư (PGS)", value: "PGS" },
-        { label: "Tiến sĩ (TS)", value: "TS" },
-        { label: "Thạc sĩ (ThS)", value: "ThS" },
+        { label: "Giáo sư", value: "gs" },
+        { label: "Phó giáo sư", value: "pgs" },
+        { label: "Không có học hàm", value: "none" },
+      ],
+    },
+    {
+      name: "academicDegree",
+      label: "Học vị",
+      type: "select",
+      width: "100%",
+      options: [
+        { label: "Tiến sĩ", value: "ts" },
+        { label: "Thạc sĩ", value: "ths" },
+        { label: "Cử nhân", value: "cn" },
+        { label: "Kỹ sư", value: "ks" },
+        { label: "Dược sĩ", value: "ds" },
+        { label: "Bác sĩ", value: "bs" },
+        { label: "Trung cấp", value: "tc" },
+        { label: "Khác", value: "khac" },
       ],
     },
   ];
@@ -111,7 +144,8 @@ export default function LecturerPage() {
     setEditingLecturer(lecturer);
     form.setFieldsValue({
       fullName: lecturer.fullName,
-      academicTitle: lecturer.academicTitle,
+      academicDegree: lecturer.academicDegree,
+      academicRank: lecturer.academicRank,
       workUnit: lecturer.workUnit,
       position: lecturer.position,
       website: lecturer.website,
@@ -141,7 +175,8 @@ export default function LecturerPage() {
 
       const submitData = {
         fullName: values.fullName,
-        academicTitle: values.academicTitle,
+        academicDegree: values.academicDegree,
+        academicRank: values.academicRank,
         workUnit: values.workUnit,
         position: values.position,
         website: values.website || undefined,
@@ -204,10 +239,25 @@ export default function LecturerPage() {
     },
     {
       title: "Học hàm",
-      dataIndex: "academicTitle",
-      key: "academicTitle",
+      dataIndex: "academicRank",
+      key: "academicRank",
       width: "10%",
-      render: (academicTitle: string) => <Tag color="blue">{academicTitle}</Tag>,
+      render: (academicRank: string) => (
+        <Tag color="blue">
+          {academicRankMap[academicRank as keyof typeof academicRankMap] || academicRank}
+        </Tag>
+      ),
+    },
+    {
+      title: "Học vị",
+      dataIndex: "academicDegree",
+      key: "academicDegree",
+      width: "10%",
+      render: (academicDegree: string) => (
+        <Tag color="green">
+          {academicDegreeMap[academicDegree as keyof typeof academicDegreeMap] || academicDegree}
+        </Tag>
+      ),
     },
     {
       title: "Đơn vị công tác",
@@ -348,13 +398,42 @@ export default function LecturerPage() {
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              name="academicTitle"
-              label="Học hàm / Học vị"
-              rules={[{ required: true, message: "Vui lòng nhập học hàm" }]}
+              name="academicRank"
+              label="Học hàm"
+              rules={[{ required: true, message: "Vui lòng chọn học hàm" }]}
             >
-              <Input placeholder="Ví dụ: GS, PGS, TS, ThS" />
+              <Select
+                placeholder="Chọn học hàm"
+                options={[
+                  { label: "Giáo sư", value: "gs" },
+                  { label: "Phó giáo sư", value: "pgs" },
+                  { label: "Không có học hàm", value: "none" },
+                ]}
+              />
             </Form.Item>
 
+            <Form.Item
+              name="academicDegree"
+              label="Học vị"
+              rules={[{ required: true, message: "Vui lòng chọn học vị" }]}
+            >
+              <Select
+                placeholder="Chọn học vị"
+                options={[
+                  { label: "Tiến sĩ", value: "ts" },
+                  { label: "Thạc sĩ", value: "ths" },
+                  { label: "Cử nhân", value: "cn" },
+                  { label: "Kỹ sư", value: "ks" },
+                  { label: "Dược sĩ", value: "ds" },
+                  { label: "Bác sĩ", value: "bs" },
+                  { label: "Trung cấp", value: "tc" },
+                  { label: "Khác", value: "khac" },
+                ]}
+              />
+            </Form.Item>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4">
             <Form.Item
               name="position"
               label="Chức vụ"
@@ -362,15 +441,15 @@ export default function LecturerPage() {
             >
               <Input placeholder="Ví dụ: Giảng viên, Trưởng khoa" />
             </Form.Item>
-          </div>
 
-          <Form.Item
-            name="workUnit"
-            label="Đơn vị công tác"
-            rules={[{ required: true, message: "Vui lòng nhập đơn vị công tác" }]}
-          >
-            <Input placeholder="Ví dụ: Khoa Công nghệ Thông tin" />
-          </Form.Item>
+            <Form.Item
+              name="workUnit"
+              label="Đơn vị công tác"
+              rules={[{ required: true, message: "Vui lòng nhập đơn vị công tác" }]}
+            >
+              <Input placeholder="Ví dụ: Khoa Công nghệ Thông tin" />
+            </Form.Item>
+          </div>
 
           <Form.Item
             name="website"
