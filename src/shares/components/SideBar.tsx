@@ -68,7 +68,7 @@ const Sidebar: React.FC = () => {
     },
     {
       key: "settings",
-      label: "Cấu hình hệ thống",
+      label: "Cấu hình Tree",
       icon: <IoIosSettings className="w-5 h-5" />,
       url: "/settings",
     },

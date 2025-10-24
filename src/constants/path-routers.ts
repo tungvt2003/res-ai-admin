@@ -77,8 +77,8 @@ export const KEYWORDS: PathItem = {
 export const SETTINGS: PathItem = {
   DETAIL: {
     PATH: "/settings",
-    LABEL: "Cấu hình hệ thống",
-    BREADCRUMB: [{ title: "Cấu hình", href: "/settings" }],
+    LABEL: "Cấu hình Tree",
+    BREADCRUMB: [{ title: "Cấu hình Tree", href: "/settings" }],
   },
   CONFIG: {
     PATH: "/settings/:key",
