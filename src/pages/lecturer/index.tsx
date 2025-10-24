@@ -272,48 +272,24 @@ export default function LecturerPage() {
       width: "12%",
     },
     // {
-    //   title: "Từ khóa",
-    //   dataIndex: "keywords",
-    //   key: "keywords",
-    //   width: "18%",
-    //   render: (keywords: Array<{ id: string; name: string }>) => (
-    //     <div className="flex flex-wrap gap-1">
-    //       {keywords && keywords.length > 0 ? (
-    //         keywords.slice(0, 3).map((keyword) => (
-    //           <Tag key={keyword.id} color="purple" className="text-xs">
-    //             {keyword.name}
-    //           </Tag>
-    //         ))
-    //       ) : (
-    //         <span className="text-gray-400 text-xs">Chưa có</span>
-    //       )}
-    //       {keywords && keywords.length > 3 && (
-    //         <Tag color="default" className="text-xs">
-    //           +{keywords.length - 3}
-    //         </Tag>
-    //       )}
-    //     </div>
-    //   ),
+    //   title: "Website",
+    //   dataIndex: "website",
+    //   key: "website",
+    //   width: "15%",
+    //   render: (website: string) =>
+    //     website ? (
+    //       <a
+    //         href={website}
+    //         target="_blank"
+    //         rel="noopener noreferrer"
+    //         className="text-blue-500 hover:underline truncate block"
+    //       >
+    //         {website}
+    //       </a>
+    //     ) : (
+    //       <span className="text-gray-400">Chưa có</span>
+    //     ),
     // },
-    {
-      title: "Website",
-      dataIndex: "website",
-      key: "website",
-      width: "15%",
-      render: (website: string) =>
-        website ? (
-          <a
-            href={website}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline truncate block"
-          >
-            {website}
-          </a>
-        ) : (
-          <span className="text-gray-400">Chưa có</span>
-        ),
-    },
     {
       title: "Trạng thái",
       dataIndex: "isActive",
