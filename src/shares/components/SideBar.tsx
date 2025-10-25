@@ -159,7 +159,7 @@ const Sidebar: React.FC = () => {
                 }`}
                 onClick={() => navigate("/")}
               >
-                Res AI
+                RES-AI.EDU
               </div>
             </div>
             <hr className="border-t border-[#8c8c8c48]" />
