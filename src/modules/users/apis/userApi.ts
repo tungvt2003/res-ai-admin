@@ -40,7 +40,10 @@ class UserClient {
 
   // ---------------- Update User ----------------
   async update(userId: string, updateData: UpdateUserBody): Promise<UpdateUserResponse> {
-    const response = await this.client.put<UpdateUserResponse>(`${endpoint}/${userId}`, updateData);
+    const response = await this.client.patch<UpdateUserResponse>(
+      `${endpoint}/${userId}`,
+      updateData,
+    );
     return response.data;
   }
 
