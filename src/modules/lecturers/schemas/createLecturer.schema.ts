@@ -7,6 +7,8 @@ export const createLecturerSchema = z.object({
   workUnit: z.string().min(1, "Đơn vị công tác không được để trống"),
   position: z.string().min(1, "Chức vụ không được để trống"),
   website: z.string().url("Website không hợp lệ").optional().or(z.literal("")),
+  zalo: z.string().optional(),
+  message: z.string().optional(),
   keywordIds: z.array(z.string()).optional(),
   // isActive: z.boolean().optional().default(true),
 });

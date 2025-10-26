@@ -149,6 +149,8 @@ export default function LecturerPage() {
       workUnit: lecturer.workUnit,
       position: lecturer.position,
       website: lecturer.website,
+      zalo: lecturer.zalo || "",
+      message: lecturer.message || "",
       keywordIds: lecturer.keywords?.map((k) => k.id) || [],
     });
 
@@ -180,6 +182,8 @@ export default function LecturerPage() {
         workUnit: values.workUnit,
         position: values.position,
         website: values.website || undefined,
+        zalo: values.zalo || undefined,
+        message: values.message || undefined,
         keywordIds: values.keywordIds || [],
         image: fileList.length > 0 ? fileList : undefined,
       };
@@ -427,9 +431,28 @@ export default function LecturerPage() {
             </Form.Item>
           </div>
 
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item
+              name="website"
+              label="Website"
+              rules={[
+                {
+                  type: "url",
+                  message: "Vui lòng nhập URL hợp lệ",
+                },
+              ]}
+            >
+              <Input placeholder="https://example.com" />
+            </Form.Item>
+
+            <Form.Item name="zalo" label="Zalo">
+              <Input placeholder="Số điện thoại hoặc link Zalo" />
+            </Form.Item>
+          </div>
+
           <Form.Item
-            name="website"
-            label="Website"
+            name="message"
+            label="Message"
             rules={[
               {
                 type: "url",
@@ -437,7 +460,7 @@ export default function LecturerPage() {
               },
             ]}
           >
-            <Input placeholder="https://example.com" />
+            <Input placeholder="Link message" />
           </Form.Item>
 
           <Form.Item name="keywordIds" label="Từ khóa chuyên môn">

@@ -9,6 +9,8 @@ type Lecturer = {
   position: string;
   image: string | null;
   website: string;
+  zalo: string | null;
+  message: string | null;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
