@@ -11,6 +11,31 @@ export interface JoditEditorProps {
   className?: string;
 }
 
+/**
+ * Hàm làm sạch: chỉ xóa font-weight khỏi inline style
+ */
+function removeFontWeightOnly(html: string) {
+  const doc = new DOMParser().parseFromString(html, "text/html");
+
+  doc.body.querySelectorAll("*").forEach((el) => {
+    const style = el.getAttribute("style");
+    if (style) {
+      // Regex xóa tất cả font-weight: bold/normal/number/none... (và khoảng trắng dư)
+      const newStyle = style
+        .replace(/font-weight\s*:\s*[^;]+;?/gi, "")
+        .replace(/\s*;\s*$/, "")
+        .trim();
+      if (newStyle) {
+        el.setAttribute("style", newStyle);
+      } else {
+        el.removeAttribute("style");
+      }
+    }
+  });
+
+  return doc.body.innerHTML;
+}
+
 const JoditEditorComponent: React.FC<JoditEditorProps> = ({
   value = "",
   onChange,
@@ -19,10 +44,7 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
   const editor = useRef<IJodit | null>(null);
   const [content, setContent] = useState(value);
 
-  // Đồng bộ khi value từ ngoài đổi (form reset / load dữ liệu)
-  useEffect(() => {
-    setContent(value);
-  }, [value]);
+  useEffect(() => setContent(value), [value]);
 
   const config = useMemo(
     () => ({
@@ -36,13 +58,44 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
       showCharsCounter: true,
       showWordsCounter: true,
       showXPathInStatusbar: false,
+
+      // Dán giữ nguyên HTML, không xóa các style khác
       askBeforePasteHTML: false,
       askBeforePasteFromWord: false,
+      defaultActionOnPaste: "insert_as_html" as const,
 
-      // Dán ảnh base64 (tùy nhu cầu có thể tắt)
       uploader: { insertImageAsBase64URI: true },
 
-      // ⚙️ Toolbar (đã có "paragraph" nên bỏ H1/H2/H3 riêng lẻ)
+      cleanHTML: {
+        // Giữ nguyên mọi thẻ
+        removeEmptyElements: false,
+        removeEmptyBlocks: false,
+      },
+
+      events: {
+        afterInit: (j: IJodit) => {
+          editor.current = j;
+          j.container.classList.add("jodit-theme-custom");
+        },
+
+        // Khi dán: chỉ xóa font-weight khỏi style
+        beforePaste: (_e: ClipboardEvent, data: { html?: string; text?: string }) => {
+          if (data.html) {
+            data.html = removeFontWeightOnly(data.html);
+          }
+        },
+
+        // Sau khi dán xong: vệ sinh lại toàn bộ nội dung trong editor
+        afterPaste: () => {
+          const j = editor.current;
+          if (!j) return;
+          const cleaned = removeFontWeightOnly(j.value);
+          if (cleaned !== j.value) j.value = cleaned;
+        },
+      },
+
+      textIcons: false,
+
       buttons: [
         "source",
         "|",
@@ -79,119 +132,14 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
         "fullsize",
         "preview",
       ],
-      buttonsMD: [
-        "source",
-        "|",
-        "bold",
-        "italic",
-        "underline",
-        "|",
-        "ul",
-        "ol",
-        "|",
-        "font",
-        "fontsize",
-        "|",
-        "paragraph",
-        "|",
-        "image",
-        "table",
-        "link",
-        "|",
-        "align",
-        "|",
-        "undo",
-        "redo",
-      ],
-      buttonsSM: [
-        "bold",
-        "italic",
-        "|",
-        "ul",
-        "ol",
-        "|",
-        "fontsize",
-        "|",
-        "paragraph",
-        "|",
-        "image",
-        "link",
-        "|",
-        "align",
-      ],
-      buttonsXS: ["bold", "italic", "|", "ul", "ol", "|", "paragraph", "|", "image"],
-
-      // ⚙️ Cực quan trọng: Cho phép đầy đủ thẻ TABLE + tránh xóa phần tử rỗng
-      // (tbody/thead/tfoot/caption/col/colgroup nếu không allow dễ bị cắt)
-      cleanHTML: {
-        allowTags: {
-          // heading
-          h1: true,
-          h2: true,
-          h3: true,
-          h4: true,
-          h5: true,
-          h6: true,
-          // text
-          p: true,
-          div: true,
-          span: true,
-          br: true,
-          strong: true,
-          em: true,
-          u: true,
-          s: true,
-          ul: true,
-          ol: true,
-          li: true,
-          a: true,
-          img: true,
-          // table
-          table: true,
-          thead: true,
-          tbody: true,
-          tfoot: true,
-          tr: true,
-          th: true,
-          td: true,
-          caption: true,
-          col: true,
-          colgroup: true,
-        },
-        removeEmptyElements: false, // giữ lại td/tr rỗng ngay sau khi chèn
-        removeEmptyBlocks: false,
-      },
-
-      // ⚙️ Dán: GIỮ NGUYÊN HTML (tránh clear làm mất cấu trúc table)
-      defaultActionOnPaste: "insert_as_html",
-
-      // Tùy chọn: can thiệp khi dán, có thể tinh chỉnh nếu vẫn bị strip bởi nguồn lạ
-      events: {
-        afterInit: (j: IJodit) => {
-          j.container.classList.add("jodit-theme-custom");
-        },
-        // Ví dụ: đảm bảo table không bị purifier tác động quá tay
-        beforePaste: (_e: ClipboardEvent, data: { html?: string; text?: string }) => {
-          // Nếu nội dung có table mà clean quá tay, ta có thể “nới tay” thêm ở đây:
-          // data.html = data.html; // để nguyên — placeholder này giữ chỗ cho việc tuỳ biến sau
-        },
-      },
-
-      textIcons: false,
-      styles: {
-        body: {
-          fontSize: "16px",
-          fontFamily: "Arial, sans-serif",
-          color: "#333",
-        },
-      },
     }),
     [],
   );
 
   const handleBlur = (newContent: string) => {
-    setContent(newContent);
-    onChange?.(newContent);
+    const cleaned = removeFontWeightOnly(newContent);
+    setContent(cleaned);
+    onChange?.(cleaned);
   };
 
   return (
@@ -201,7 +149,7 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
         value={content}
         config={config as any}
         onBlur={handleBlur}
-        onChange={(newContent) => setContent(newContent)}
+        onChange={(val) => setContent(val)}
       />
     </div>
   );
