@@ -9,6 +9,7 @@ export const createLecturerSchema = z.object({
   website: z.string().url("Website không hợp lệ").optional().or(z.literal("")),
   zalo: z.string().optional(),
   message: z.string().optional(),
+  order: z.number().optional().default(0),
   keywordIds: z.array(z.string()).optional(),
   // isActive: z.boolean().optional().default(true),
 });

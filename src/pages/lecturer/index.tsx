@@ -151,6 +151,7 @@ export default function LecturerPage() {
       website: lecturer.website,
       zalo: lecturer.zalo || "",
       message: lecturer.message || "",
+      order: lecturer.order,
       keywordIds: lecturer.keywords?.map((k) => k.id) || [],
     });
 
@@ -184,6 +185,7 @@ export default function LecturerPage() {
         website: values.website || undefined,
         zalo: values.zalo || undefined,
         message: values.message || undefined,
+        order: values.order ? Number(values.order) : 0,
         keywordIds: values.keywordIds || [],
         image: fileList.length > 0 ? fileList : undefined,
       };
@@ -450,18 +452,28 @@ export default function LecturerPage() {
             </Form.Item>
           </div>
 
-          <Form.Item
-            name="message"
-            label="Message"
-            rules={[
-              {
-                type: "url",
-                message: "Vui lòng nhập URL hợp lệ",
-              },
-            ]}
-          >
-            <Input placeholder="Link message" />
-          </Form.Item>
+          <div className="grid grid-cols-2 gap-4">
+            <Form.Item
+              name="message"
+              label="Message"
+              rules={[
+                {
+                  type: "url",
+                  message: "Vui lòng nhập URL hợp lệ",
+                },
+              ]}
+            >
+              <Input placeholder="Link message" />
+            </Form.Item>
+
+            <Form.Item
+              name="order"
+              label="Thứ tự"
+              rules={[{ type: "number", message: "Vui lòng nhập số" }]}
+            >
+              <Input type="number" placeholder="Thứ tự hiển thị" style={{ width: "100%" }} />
+            </Form.Item>
+          </div>
 
           <Form.Item name="keywordIds" label="Từ khóa chuyên môn">
             <Select
