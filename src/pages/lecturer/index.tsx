@@ -28,6 +28,7 @@ const academicDegreeMap = {
   ts: "Tiến sĩ",
   ths: "Thạc sĩ",
   cn: "Cử nhân",
+  ncs: "Nghiên cứu sinh",
   ks: "Kỹ sư",
   ds: "Dược sĩ",
   bs: "Bác sĩ",
@@ -115,6 +116,7 @@ export default function LecturerPage() {
       options: [
         { label: "Tiến sĩ", value: "ts" },
         { label: "Thạc sĩ", value: "ths" },
+        { label: "Nghiên cứu sinh", value: "ncs" },
         { label: "Cử nhân", value: "cn" },
         { label: "Kỹ sư", value: "ks" },
         { label: "Dược sĩ", value: "ds" },
@@ -404,6 +406,7 @@ export default function LecturerPage() {
                 options={[
                   { label: "Tiến sĩ", value: "ts" },
                   { label: "Thạc sĩ", value: "ths" },
+                  { label: "Nghiên cứu sinh", value: "ncs" },
                   { label: "Cử nhân", value: "cn" },
                   { label: "Kỹ sư", value: "ks" },
                   { label: "Dược sĩ", value: "ds" },
@@ -469,7 +472,13 @@ export default function LecturerPage() {
             <Form.Item
               name="order"
               label="Thứ tự"
-              rules={[{ type: "number", message: "Vui lòng nhập số" }]}
+              rules={[
+                {
+                  pattern: /^\d+$/,
+                  message: "Vui lòng nhập số",
+                },
+              ]}
+              normalize={(value) => (value === "" ? undefined : Number(value))}
             >
               <Input type="number" placeholder="Thứ tự hiển thị" style={{ width: "100%" }} />
             </Form.Item>
