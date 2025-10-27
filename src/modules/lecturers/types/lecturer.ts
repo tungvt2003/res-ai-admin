@@ -11,6 +11,7 @@ type Lecturer = {
   website: string;
   zalo: string | null;
   message: string | null;
+  order: number;
   isActive: boolean;
   createdAt: string;
   updatedAt: string;
