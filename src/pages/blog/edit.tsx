@@ -18,8 +18,10 @@ const convertImageUrls = (content: string): string => {
   if (!content) return content;
 
   // Lấy base URL từ environment variable
+  const baseURL = import.meta.env.VITE_API_URL || "http://localhost:9999";
+
   // Tìm tất cả src="/uploads/..." và thay thế bằng full URL
-  return content.replace(/src="\/uploads\//g, `src="http://103.243.173.86:9999/uploads/`);
+  return content.replace(/src="\/uploads\//g, `src="${baseURL}/uploads/`);
 };
 
 const { TextArea } = Input;
