@@ -14,23 +14,29 @@ export interface JoditEditorProps {
 }
 
 /**
- * Hàm làm sạch: chỉ xóa font-weight khỏi inline style
+ * Hàm clean chỉ cho images: xóa style không cần thiết từ img tags
  */
-function removeFontWeightOnly(html: string) {
+function cleanImageStyles(html: string): string {
   const doc = new DOMParser().parseFromString(html, "text/html");
 
-  doc.body.querySelectorAll("*").forEach((el) => {
-    const style = el.getAttribute("style");
+  doc.body.querySelectorAll("img").forEach((img) => {
+    const style = img.getAttribute("style");
     if (style) {
-      // Regex xóa tất cả font-weight: bold/normal/number/none... (và khoảng trắng dư)
+      // Chỉ xóa các style không cần thiết từ img, giữ lại width, height, margin, padding
       const newStyle = style
         .replace(/font-weight\s*:\s*[^;]+;?/gi, "")
+        .replace(/font-family\s*:\s*[^;]+;?/gi, "")
+        .replace(/font-size\s*:\s*[^;]+;?/gi, "")
+        .replace(/color\s*:\s*[^;]+;?/gi, "")
+        .replace(/text-align\s*:\s*[^;]+;?/gi, "")
+        .replace(/line-height\s*:\s*[^;]+;?/gi, "")
         .replace(/\s*;\s*$/, "")
         .trim();
+
       if (newStyle) {
-        el.setAttribute("style", newStyle);
+        img.setAttribute("style", newStyle);
       } else {
-        el.removeAttribute("style");
+        img.removeAttribute("style");
       }
     }
   });
@@ -81,6 +87,9 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
         }
       });
 
+      // Clean styles chỉ cho images
+      updatedContent = cleanImageStyles(updatedContent);
+
       return updatedContent;
     } catch (error) {
       console.error("Error uploading base64 images:", error);
@@ -123,20 +132,19 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
           j.container.classList.add("jodit-theme-custom");
         },
 
-        // Khi dán: xóa font-weight và upload base64 images
+        // Khi dán: upload base64 images và clean chỉ images
         beforePaste: async (_e: ClipboardEvent, data: { html?: string; text?: string }) => {
           if (data.html) {
-            data.html = removeFontWeightOnly(data.html);
             data.html = await uploadAndReplaceBase64Images(data.html);
           }
         },
 
-        // Sau khi dán xong: vệ sinh lại toàn bộ nội dung trong editor
+        // Sau khi dán xong: upload base64 images và clean chỉ images trong editor
         afterPaste: async () => {
           const j = editor.current;
           if (!j) return;
-          let cleaned = removeFontWeightOnly(j.value);
-          cleaned = await uploadAndReplaceBase64Images(cleaned);
+          let cleaned = await uploadAndReplaceBase64Images(j.value);
+          cleaned = cleanImageStyles(cleaned);
           if (cleaned !== j.value) j.value = cleaned;
         },
       },
@@ -184,8 +192,8 @@ const JoditEditorComponent: React.FC<JoditEditorProps> = ({
   );
 
   const handleBlur = async (newContent: string) => {
-    let cleaned = removeFontWeightOnly(newContent);
-    cleaned = await uploadAndReplaceBase64Images(cleaned);
+    let cleaned = await uploadAndReplaceBase64Images(newContent);
+    cleaned = cleanImageStyles(cleaned);
     setContent(cleaned);
     onChange?.(cleaned);
   };
