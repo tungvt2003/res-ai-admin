@@ -13,6 +13,17 @@ import { Paths } from "../../constants/path-routers.ts";
 import { getApiUrl } from "../../shares/utils/utils.ts";
 import JoditEditor from "../../shares/components/JoditEditor.tsx";
 
+// Helper function để convert relative URL thành full URL
+const convertImageUrls = (content: string): string => {
+  if (!content) return content;
+
+  // Lấy base URL từ environment variable
+  const baseURL = import.meta.env.VITE_API_URL || "http://localhost:9999";
+
+  // Tìm tất cả src="/uploads/..." và thay thế bằng full URL
+  return content.replace(/src="\/uploads\//g, `src="${baseURL}/uploads/`);
+};
+
 const { TextArea } = Input;
 
 export default function EditBlogPage() {
@@ -50,11 +61,24 @@ export default function EditBlogPage() {
   // Update form and image when blog data is loaded
   useEffect(() => {
     if (blog) {
+      // Parse contents từ JSON nếu cần và convert URLs
+      let parsedContent = blog.contents;
+      if (typeof blog.contents === "string") {
+        try {
+          parsedContent = JSON.parse(blog.contents);
+        } catch {
+          // Nếu không phải JSON thì giữ nguyên
+        }
+      }
+
+      // Convert relative URLs thành full URLs
+      parsedContent = convertImageUrls(parsedContent);
+
       // Update form values
       form.setFieldsValue({
         title: blog.title,
         description: blog.description,
-        content: blog.contents,
+        content: parsedContent,
         categoryId: blog.categoryId,
       });
 
@@ -143,7 +167,15 @@ export default function EditBlogPage() {
           initialValues={{
             title: blog.title,
             description: blog.description,
-            content: blog.contents,
+            content: (() => {
+              try {
+                const parsed =
+                  typeof blog.contents === "string" ? JSON.parse(blog.contents) : blog.contents;
+                return convertImageUrls(parsed);
+              } catch {
+                return convertImageUrls(blog.contents);
+              }
+            })(),
             categoryId: blog.categoryId,
           }}
         >
